@@ -1,6 +1,8 @@
 package com.example.kjsperling.shoppinglist;
 
 
+import java.text.DecimalFormat;
+
 public class Item {
 
     private double cost;
@@ -8,6 +10,8 @@ public class Item {
     private int priority;
     private int quantity;
     private boolean purchased;
+    DecimalFormat formatter = new DecimalFormat("#0.00");
+
 
 
     Item(double cost, String name, int priority, int quantity){
@@ -20,6 +24,10 @@ public class Item {
 
     public double getCost() {
         return cost;
+    }
+
+    public String getCostString(){
+        return formatter.format(cost);
     }
 
     public void setCost(double cost) {
@@ -46,6 +54,10 @@ public class Item {
         return quantity;
     }
 
+    public String getQuantityString(){
+        return Integer.toString(quantity);
+    }
+
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
@@ -60,6 +72,10 @@ public class Item {
 
     public String toString(){
         return this.getName();
+    }
+
+    public double getTotal(){
+        return quantity*cost;
     }
 
     @Override

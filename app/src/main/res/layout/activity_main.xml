@@ -24,12 +24,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Budget"/>
-        <Button
-            android:id="@+id/testbutton3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Button 3"/>
     </LinearLayout>
 
     <TextView
@@ -40,7 +34,8 @@
         android:text="BUDGET"
         android:textAlignment="center"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:background="@drawable/boarder"/>
 
     <ListView
         android:id="@+id/listView"

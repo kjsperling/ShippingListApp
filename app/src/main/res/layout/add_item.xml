@@ -43,6 +43,11 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:inputType="number"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:text="Item Priority"/>
     <Spinner
         android:id="@+id/priority_spinner"
         android:layout_width="fill_parent"

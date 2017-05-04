@@ -1,9 +1,7 @@
 package com.example.kjsperling.shoppinglist;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -18,61 +16,78 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    Item item1 = new Item(5.00,"Chicken", 1,2);
-    Item item2 = new Item(2.00,"Chips", 2,1);
-    Item item3 = new Item(3.00,"Bread", 2,1);
-    Item item4 = new Item(10.00,"Potatoes", 2,1);
-    Item item5 = new Item(11.00,"Peas", 2,1);
-    Item item6 = new Item(6.00,"Milk", 2,1);
-    Item item7 = new Item(5.00,"Chicken", 1,2);
-    Item item8 = new Item(2.00,"Chips", 2,1);
-    Item item9 = new Item(3.00,"Bread", 2,1);
-    Item item10 = new Item(10.00,"Potatoes", 2,1);
-    Item item11 = new Item(11.00,"Peas", 2,1);
-    Item item12 = new Item(6.00,"Milk", 2,1);
-    Item item13 = new Item(5.00,"Chicken", 1,2);
-    Item item14 = new Item(2.00,"Chips", 2,1);
-    Item item15 = new Item(3.00,"Bread", 2,1);
-    Item item16 = new Item(10.00,"Potatoes", 2,1);
-    Item item17 = new Item(11.00,"Peas", 2,1);
-    Item item18 = new Item(6.00,"Milk", 2,1);
+
+    final ArrayList<Item> itemList = new ArrayList<>();
+    double initialBudget = 0;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        setTitle(R.string.app_name);
-//        //final List<Item> itemList = new ArrayList<>(Arrays.asList(item1,item2,item3,item4,item5,item6,item7,item8,item9,
-//                item10,item11,item12,item13,item14,item15,item16,item17,item18));
-        final List<Item> itemList = new ArrayList<>();
-        final ListView listView = (ListView) findViewById(R.id.listView);
 
-        final ArrayAdapter<Item> adapter = new ArrayAdapter<>(this, R.layout.list_layout,itemList);
+        final Budget budget = new Budget(initialBudget);
+        final ListView listView = (ListView) findViewById(R.id.listView);
+        final CustomArrayAdapter adapter = new CustomArrayAdapter(this,itemList);
         final ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.priority_array,
                 android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         final Button addButton = (Button) findViewById(R.id.addButton);
         Button budgetButton = (Button) findViewById(R.id.setBudgetbutton);
         listView.setAdapter(adapter);
+        final TextView budgetText = (TextView) findViewById(R.id.budget);
+        budgetText.setText(budget.displayBudget());
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Item item = (Item) parent.getItemAtPosition(position);
-                item.setName(item.getName()+" Clicked");
-                item.setPurchased(true);
-                adapter.notifyDataSetChanged();
-
-                Toast.makeText(getApplicationContext(), ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
+                //item.setName(item.getName()+" Clicked");
+                if(!item.isPurchased()){
+                    item.setPurchased(true);
+                    budget.subtractFromBudget(item.getTotal());
+                    budgetText.setText(budget.displayBudget());
+                    adapter.notifyDataSetChanged();
+                    //Toast.makeText(getApplicationContext(), ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), item.getName()+" Purchased", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(final AdapterView<?> parent, View view, final int pos, long id) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                LayoutInflater inflater = MainActivity.this.getLayoutInflater();
+                final View addDialogView = inflater.inflate(R.layout.delete, null);
+                builder.setView(addDialogView);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Item item = (Item) parent.getItemAtPosition(pos);
+                        if(item.isPurchased()){
+                            budget.addToBudget(item.getTotal());
+                        }
+                        budgetText.setText(budget.displayBudget());
+                        itemList.remove(pos);
+                        adapter.notifyDataSetChanged();
+                        }
+                        })
+                        .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                final AlertDialog dialog = builder.create();
+                dialog.show();
+
+                return true;
+            }
+        });
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,9 +112,9 @@ public class MainActivity extends AppCompatActivity {
                     itemQuantity.setError("Quantity is required!");
                 }
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
                         })
                         .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -118,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                             int quantity = Integer.parseInt(itemQuantity.getText().toString());
                             int priority = spinner.getSelectedItemPosition() + 1;
                             Item item = new Item(cost, name, priority, quantity);
-                            itemList.add(item);
+                            addToList(item);
                             adapter.notifyDataSetChanged();
                             dialog.dismiss();
                         }else {
@@ -131,6 +146,57 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+        budgetButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                LayoutInflater inflater = MainActivity.this.getLayoutInflater();
+                final View addDialogView = inflater.inflate(R.layout.budget, null);
+                builder.setView(addDialogView);
+                final EditText listBudget = (EditText) addDialogView.findViewById(R.id.budgetValue);
+                listBudget.setText(budget.getOriginalBudgetString());
+                if(listBudget.getText().toString().length()==0){
+                    listBudget.setError("Budget is required!");
+                }
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                        })
+                        .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
 
+                final AlertDialog dialog = builder.create();
+                dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v) {
+                        if(listBudget.getText().length()>0){
+                            budget.updateBudget(Double.parseDouble(listBudget.getText().toString()));
+                            budgetText.setText(budget.displayBudget());
+                            adapter.notifyDataSetChanged();
+                            dialog.dismiss();
+                        }else {
+                            Toast.makeText(getApplicationContext(), "Fill in all required fields", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+
+    }
+
+    public void addToList(Item item){
+        if(itemList.contains(item)){
+            int currentQuantity = itemList.get(itemList.indexOf(item)).getQuantity();
+            itemList.get(itemList.indexOf(item)).setQuantity(currentQuantity + item.getQuantity());
+        }else {
+            itemList.add(item);
+        }
+        itemList.sort(new ItemComparator());
     }
 }
