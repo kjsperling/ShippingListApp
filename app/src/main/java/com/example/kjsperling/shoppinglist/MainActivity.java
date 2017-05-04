@@ -46,13 +46,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Item item = (Item) parent.getItemAtPosition(position);
-                //item.setName(item.getName()+" Clicked");
                 if(!item.isPurchased()){
                     item.setPurchased(true);
                     budget.subtractFromBudget(item.getTotal());
                     budgetText.setText(budget.displayBudget());
                     adapter.notifyDataSetChanged();
-                    //Toast.makeText(getApplicationContext(), ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
                     Toast.makeText(getApplicationContext(), item.getName()+" Purchased", Toast.LENGTH_SHORT).show();
                 }
             }
