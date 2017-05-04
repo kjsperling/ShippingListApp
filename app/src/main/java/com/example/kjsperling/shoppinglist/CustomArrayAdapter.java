@@ -27,9 +27,10 @@ public class CustomArrayAdapter extends ArrayAdapter<Item> {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.list_row, parent, false);
+        View rowView = inflater.inflate(R.layout.list_multi, parent, false);
         TextView name = (TextView) rowView.findViewById(R.id.listItemName);
-        TextView quantityCost = (TextView) rowView.findViewById(R.id.listItemQuantityCost);
+        TextView quantity = (TextView) rowView.findViewById(R.id.listItemQuantity);
+        TextView cost = (TextView) rowView.findViewById(R.id.listItemCost);
         TextView priority = (TextView) rowView.findViewById(R.id.listItemPriority);
         String priorityText=null;
         if(items.get(position).getPriority()==1){
@@ -42,14 +43,17 @@ public class CustomArrayAdapter extends ArrayAdapter<Item> {
 
         if(items.get(position).isPurchased()){
             name.setText(items.get(position).getName());
-            quantityCost.setText(items.get(position).getQuantityString() + " X $" + items.get(position).getCostString());
+            quantity.setText("Quantity: " + items.get(position).getQuantityString());
+            cost.setText("Cost: $" + items.get(position).getCostString());
             priority.setText(priorityText);
             name.setPaintFlags(name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            quantityCost.setPaintFlags(quantityCost.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            quantity.setPaintFlags(quantity.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             priority.setPaintFlags(priority.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            cost.setPaintFlags(cost.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }else {
             name.setText(items.get(position).getName());
-            quantityCost.setText(items.get(position).getQuantityString() + " X $" + items.get(position).getCostString());
+            quantity.setText("Quantity: " + items.get(position).getQuantityString());
+            cost.setText("Cost: $" + items.get(position).getCostString());
             priority.setText(priorityText);
         }
         return rowView;

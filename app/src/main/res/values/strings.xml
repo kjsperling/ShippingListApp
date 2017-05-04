@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ShoppingList</string>
+    <string name="app_name">Shopping List</string>
     <string-array name="priority_array">
         <item>High</item>
         <item>Medium</item>
