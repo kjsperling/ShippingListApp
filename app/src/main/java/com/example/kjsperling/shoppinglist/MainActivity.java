@@ -41,11 +41,13 @@ public class MainActivity extends AppCompatActivity {
         final TextView budgetText = (TextView) findViewById(R.id.budget);
         budgetText.setText(budget.displayBudget());
 
-
+        //on click listener for items in list
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Item item = (Item) parent.getItemAtPosition(position);
+                // if the item is not purchased it sets it as purchased, subtracts from budget, adjusts budget
+                // and updates the listview
                 if(!item.isPurchased()){
                     item.setPurchased(true);
                     budget.subtractFromBudget(item.getTotal());
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //long click listener to handle deletes
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(final AdapterView<?> parent, View view, final int pos, long id) {
@@ -67,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Item item = (Item) parent.getItemAtPosition(pos);
+                        //if the item is purchased, it adds it back to budget
                         if(item.isPurchased()){
                             budget.addToBudget(item.getTotal());
                         }
@@ -87,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //on click listener for the Add Item Button
+        //pops an alert dialog that allows user to add item
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
                 spinner.setAdapter(spinnerAdapter);
                 builder.setCancelable(false);
                 final EditText itemName = (EditText) addDialogView.findViewById(R.id.itemName);
+
+                //field validation
                 if(itemName.getText().toString().length()==0){
                     itemName.setError("Name is required!");
                 }
@@ -123,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
                 dialog.show();
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
                 {
+                    //override of the onclick for the positive button
+                    //allows dialog to stay open when there are errors, strange but it works
                     @Override
                     public void onClick(View v) {
                         if(itemName.getText().length()>0 && itemCost.getText().length()>0 && itemQuantity.getText().length()>0){
@@ -171,8 +181,11 @@ public class MainActivity extends AppCompatActivity {
                 dialog.show();
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
                 {
+                    //override of the onclick for the positive button
+                    //allows dialog to stay open when there are errors, strange but it works
                     @Override
                     public void onClick(View v) {
+                        //if the value is greater then 0, it sets the budget and displays it
                         if(listBudget.getText().length()>0){
                             budget.updateBudget(Double.parseDouble(listBudget.getText().toString()));
                             budgetText.setText(budget.displayBudget());
@@ -188,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Adds and sorts item objects in arraylist using custom comparator
     public void addToList(Item item){
         if(itemList.contains(item)){
             int currentQuantity = itemList.get(itemList.indexOf(item)).getQuantity();

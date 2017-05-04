@@ -18,6 +18,9 @@ public class Budget {
         this.budget = budget;
     }
 
+    //this is a buggy way to keep track of old budget
+    //keeps track of old budget but loses it after two updates
+    //need to fix
     public void updateBudget(double newBudget){
         originalBudget = newBudget;
         if(budget<0){

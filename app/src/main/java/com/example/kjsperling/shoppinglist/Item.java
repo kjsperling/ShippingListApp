@@ -78,6 +78,7 @@ public class Item {
         return quantity*cost;
     }
 
+    //for use with custom comparator, compares item objects by name ignoring case
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

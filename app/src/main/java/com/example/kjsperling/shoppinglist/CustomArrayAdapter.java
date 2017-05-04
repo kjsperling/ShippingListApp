@@ -33,6 +33,7 @@ public class CustomArrayAdapter extends ArrayAdapter<Item> {
         TextView cost = (TextView) rowView.findViewById(R.id.listItemCost);
         TextView priority = (TextView) rowView.findViewById(R.id.listItemPriority);
         String priorityText=null;
+        //takes priority int and converts it to string
         if(items.get(position).getPriority()==1){
             priorityText="High";
         }else if(items.get(position).getPriority()==2){
@@ -40,7 +41,8 @@ public class CustomArrayAdapter extends ArrayAdapter<Item> {
         }else if(items.get(position).getPriority()==3){
             priorityText="Low";
         }
-
+        //if the item is purchased, strike though the text to show it was purchased
+        //else display the item fields normally
         if(items.get(position).isPurchased()){
             name.setText(items.get(position).getName());
             quantity.setText("Quantity: " + items.get(position).getQuantityString());
