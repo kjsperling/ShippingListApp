@@ -36,10 +36,12 @@ public class MainActivity extends AppCompatActivity {
                 android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         final Button addButton = (Button) findViewById(R.id.addButton);
-        Button budgetButton = (Button) findViewById(R.id.setBudgetbutton);
-        listView.setAdapter(adapter);
+        final Button budgetButton = (Button) findViewById(R.id.setBudgetbutton);
         final TextView budgetText = (TextView) findViewById(R.id.budget);
+
         budgetText.setText(budget.displayBudget());
+        listView.setAdapter(adapter);
+
 
         //on click listener for items in list
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
